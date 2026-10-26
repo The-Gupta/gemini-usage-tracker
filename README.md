@@ -1,28 +1,28 @@
-﻿# ðŸ”® Gemini Usage Tracker
+# Gemini Usage Tracker
 
 > Track your Gemini API token usage and costs per session with a beautiful real-time dashboard.
 
 A web-based dashboard that wraps the Google Gemini API with **automatic token tracking**, **real-time cost calculation**, and **session management**. Built for developers who want visibility into their API spending on the Tier 1 Pay-as-you-go plan.
 
-## âœ¨ Features
+## Features
 
-- **ðŸ“Š Real-time Dashboard** â€” Glassmorphism dark-mode UI with animated stat cards
-- **ðŸ’° Per-Session Cost Tracking** â€” Track exactly how much each session costs
-- **ðŸ”¢ Token Breakdown** â€” Input, output, and thinking token counts per call
-- **ðŸ“ˆ Interactive Charts** â€” Cost over time and token distribution visualizations
-- **ðŸ§ª API Playground** â€” Test prompts directly from the dashboard with instant cost feedback
-- **ðŸŽ¯ Budget Alerts** â€” Set spending limits with visual warnings at 80% and 100%
-- **ðŸ“¥ Export Data** â€” Download usage history as CSV or JSON
-- **ðŸŒ“ Dark/Light Themes** â€” Toggle between gorgeous dark and light modes
-- **âš¡ Latency Tracking** â€” Response time per call and average per session
-- **ðŸ¤– Antigravity IDE Skill** â€” Integration with Antigravity IDE for AI-assisted workflows
+- **Real-time Dashboard** - Material Design 3 dark/light UI with animated stat cards
+- **Per-Session Cost Tracking** - Track exactly how much each session costs in INR
+- **Token Breakdown** - Input, output, and thinking token counts per call
+- **Interactive Charts** - Cost over time and token distribution visualizations
+- **API Playground** - Test prompts directly from the dashboard with instant cost feedback
+- **Budget Alerts** - Set spending limits with visual warnings at 80% and 100%
+- **Export Data** - Download usage history as CSV or JSON
+- **Dark/Light Themes** - Toggle between gorgeous dark and light modes
+- **Latency Tracking** - Response time per call and average per session
+- **Antigravity IDE Skill** - Integration with Antigravity IDE for AI-assisted workflows
 
-## ðŸš€ Quick Start
+## Quick Start
 
 ### 1. Clone & Install
 ```bash
-git clone https://github.com/The-Gupta/gemini-usage-tracker.git
-cd gemini-usage-tracker
+git clone https://github.com/The-Gupta/-gemini-usage-tracker.git
+cd -gemini-usage-tracker
 npm install
 ```
 
@@ -37,9 +37,9 @@ cp .env.example .env
 npm run dev
 ```
 
-Open **http://localhost:3000** â€” that's it! ðŸŽ‰
+Open **http://localhost:3000** - that's it!
 
-## ðŸ“Š Dashboard Overview
+## Dashboard Overview
 
 | Section | Description |
 |---------|-------------|
@@ -51,7 +51,7 @@ Open **http://localhost:3000** â€” that's it! ðŸŽ‰
 | **Call Log** | Detailed table of every API call with full metadata |
 | **Session History** | All past sessions with costs, exportable to CSV/JSON |
 
-## ðŸ”§ API Endpoints
+## API Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -67,7 +67,9 @@ Open **http://localhost:3000** â€” that's it! ðŸŽ‰
 | `GET` | `/api/export/csv` | Export all data as CSV |
 | `GET` | `/api/health` | Server health check |
 
-## ðŸ’° Supported Models & Pricing (Tier 1)
+## Supported Models & Pricing (Tier 1)
+
+All prices are in USD per 1M tokens. Costs are displayed in INR at the current exchange rate.
 
 | Model | Input (per 1M) | Output (per 1M) |
 |-------|---------------|-----------------|
@@ -79,38 +81,38 @@ Open **http://localhost:3000** â€” that's it! ðŸŽ‰
 
 > **Note:** Thinking/reasoning tokens are billed at the output rate.
 
-## ðŸ› ï¸ Tech Stack
+## Tech Stack
 
 - **Runtime:** Node.js (ES Modules)
 - **API SDK:** `@google/genai` (official Google GenAI SDK)
 - **Server:** Express.js
-- **Frontend:** Vanilla HTML/CSS/JS
+- **Frontend:** Vanilla HTML/CSS/JS with Material Design 3
 - **Charts:** Chart.js
-- **Fonts:** Inter + JetBrains Mono
+- **Fonts:** Google Sans + Google Sans Mono
+- **Icons:** Material Symbols Rounded
 - **Storage:** Local JSON file
 
-## ðŸ“ Project Structure
+## Project Structure
 
 ```
 gemini-tracker/
-â”œâ”€â”€ public/             # Frontend dashboard
-â”‚   â”œâ”€â”€ index.html
-â”‚   â”œâ”€â”€ css/styles.css
-â”‚   â””â”€â”€ js/
-â”œâ”€â”€ src/                # Backend server
-â”‚   â”œâ”€â”€ server.js
-â”‚   â”œâ”€â”€ gemini-client.js
-â”‚   â”œâ”€â”€ session-manager.js
-â”‚   â”œâ”€â”€ cost-calculator.js
-â”‚   â”œâ”€â”€ pricing-config.js
-â”‚   â””â”€â”€ storage.js
-â”œâ”€â”€ .agents/skills/     # Antigravity IDE Skill
-â”œâ”€â”€ data/               # Session data (gitignored)
-â”œâ”€â”€ .env.example
-â””â”€â”€ package.json
+├── public/             # Frontend dashboard
+│   ├── index.html
+│   ├── css/styles.css
+│   └── js/
+├── src/                # Backend server
+│   ├── server.js
+│   ├── gemini-client.js
+│   ├── session-manager.js
+│   ├── cost-calculator.js
+│   ├── pricing-config.js
+│   └── storage.js
+├── .agents/skills/     # Antigravity IDE Skill
+├── data/               # Session data (gitignored)
+├── .env.example
+└── package.json
 ```
 
-## ðŸ“œ License
+## License
 
 MIT
-
