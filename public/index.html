@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gemini Usage Tracker</title>
+  <meta name="description" content="Track your Gemini API token usage and costs in INR per session.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Text:wght@400;500;600;700&family=Google+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- ── Top Nav Bar ─────────────────────────────────────── -->
+  <nav class="topbar" id="topbar">
+    <div class="topbar-left">
+      <div class="topbar-brand">
+        <span class="material-symbols-rounded brand-icon">auto_awesome</span>
+        <span class="brand-name">Gemini Tracker</span>
+      </div>
+      <span class="topbar-divider"></span>
+      <span class="topbar-subtitle">Usage & Cost Dashboard</span>
+    </div>
+    <div class="topbar-right">
+      <div class="rate-chip" id="exchangeRateDisplay">
+        <span class="material-symbols-rounded" style="font-size:16px">currency_exchange</span>
+        ₹95/USD
+      </div>
+      <button id="btnThemeToggle" class="icon-btn" title="Toggle theme">
+        <span class="material-symbols-rounded" id="themeIcon">dark_mode</span>
+      </button>
+      <div class="status-chip" id="apiStatusChip">
+        <span class="status-indicator" id="statusDot"></span>
+        <span id="statusText">Checking…</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── Session Bar ─────────────────────────────────────── -->
+  <div class="session-bar" id="sessionBar">
+    <div class="session-bar-left">
+      <span class="material-symbols-rounded session-icon" id="sessionIcon">radio_button_unchecked</span>
+      <span class="session-label" id="sessionLabel">No active session</span>
+      <input type="text" id="sessionNameInput" class="session-input" placeholder="Session name…">
+    </div>
+    <div class="session-bar-center">
+      <button id="btnStartSession" class="gm-btn gm-btn-filled" title="Start Session">
+        <span class="material-symbols-rounded">play_arrow</span> Start Session
+      </button>
+      <button id="btnEndSession" class="gm-btn gm-btn-tonal" title="End Session" style="display:none;">
+        <span class="material-symbols-rounded">stop</span> End Session
+      </button>
+    </div>
+    <div class="session-bar-right">
+      <div class="budget-group">
+        <span class="material-symbols-rounded" style="font-size:18px;color:var(--on-surface-variant)">savings</span>
+        <span class="budget-label">Budget</span>
+        <div class="budget-input-wrap">
+          <span class="budget-prefix">₹</span>
+          <input type="number" id="budgetInput" class="budget-input" placeholder="50" step="1" min="0">
+        </div>
+        <button id="btnSetBudget" class="gm-btn gm-btn-text gm-btn-sm">Set</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="dashboard">
+
+    <!-- ── Metric Cards ──────────────────────────────────── -->
+    <section class="metrics-grid" id="metricsGrid">
+      <div class="metric-card metric-card--primary" id="cardSessionCost">
+        <div class="metric-header">
+          <span class="material-symbols-rounded metric-icon">payments</span>
+          <span class="metric-title">Session Cost</span>
+        </div>
+        <div class="metric-value" id="statSessionCost">₹0.00</div>
+      </div>
+      <div class="metric-card" id="cardTotalTokens">
+        <div class="metric-header">
+          <span class="material-symbols-rounded metric-icon">data_usage</span>
+          <span class="metric-title">Tokens Used</span>
+        </div>
+        <div class="metric-value" id="statTotalTokens">0</div>
+      </div>
+      <div class="metric-card" id="cardApiCalls">
+        <div class="metric-header">
+          <span class="material-symbols-rounded metric-icon">swap_vert</span>
+          <span class="metric-title">API Calls</span>
+        </div>
+        <div class="metric-value" id="statApiCalls">0</div>
+      </div>
+      <div class="metric-card" id="cardAvgLatency">
+        <div class="metric-header">
+          <span class="material-symbols-rounded metric-icon">speed</span>
+          <span class="metric-title">Avg Latency</span>
+        </div>
+        <div class="metric-value" id="statAvgLatency">0ms</div>
+      </div>
+    </section>
+
+    <!-- ── Token Breakdown ───────────────────────────────── -->
+    <section class="breakdown-grid" id="breakdownGrid">
+      <div class="breakdown-card" id="cardInputTokens">
+        <div class="breakdown-header">
+          <span class="material-symbols-rounded breakdown-icon icon-input">arrow_downward</span>
+          <span class="breakdown-title">Input Tokens</span>
+        </div>
+        <div class="breakdown-value" id="statInputTokens">0</div>
+        <div class="breakdown-sub" id="statInputCost">₹0.00</div>
+      </div>
+      <div class="breakdown-card" id="cardOutputTokens">
+        <div class="breakdown-header">
+          <span class="material-symbols-rounded breakdown-icon icon-output">arrow_upward</span>
+          <span class="breakdown-title">Output Tokens</span>
+        </div>
+        <div class="breakdown-value" id="statOutputTokens">0</div>
+        <div class="breakdown-sub" id="statOutputCost">₹0.00</div>
+      </div>
+      <div class="breakdown-card" id="cardThinkingTokens">
+        <div class="breakdown-header">
+          <span class="material-symbols-rounded breakdown-icon icon-thinking">psychology</span>
+          <span class="breakdown-title">Thinking Tokens</span>
+        </div>
+        <div class="breakdown-value" id="statThinkingTokens">0</div>
+        <div class="breakdown-sub" id="statThinkingCost">₹0.00</div>
+      </div>
+      <div class="breakdown-card breakdown-card--budget" id="cardBudget" style="display:none;">
+        <div class="breakdown-header">
+          <span class="material-symbols-rounded breakdown-icon icon-budget">target</span>
+          <span class="breakdown-title">Budget Used</span>
+        </div>
+        <div class="budget-progress">
+          <div class="budget-progress-track">
+            <div class="budget-progress-fill" id="budgetBarFill"></div>
+          </div>
+        </div>
+        <div class="breakdown-sub" id="budgetText">₹0.00 / ₹0.00</div>
+      </div>
+    </section>
+
+    <!-- ── Charts ────────────────────────────────────────── -->
+    <section class="charts-grid">
+      <div class="card chart-card chart-card--wide" id="chartCostOverTime">
+        <div class="card-header">
+          <h3 class="card-title">
+            <span class="material-symbols-rounded">trending_up</span>
+            Cost Over Time
+          </h3>
+          <div class="chip-group">
+            <button class="chip chip--selected" data-range="session">Session</button>
+            <button class="chip" data-range="today">Today</button>
+            <button class="chip" data-range="all">All Time</button>
+          </div>
+        </div>
+        <div class="chart-container">
+          <canvas id="canvasCostTime"></canvas>
+        </div>
+      </div>
+      <div class="card chart-card" id="chartTokenDist">
+        <div class="card-header">
+          <h3 class="card-title">
+            <span class="material-symbols-rounded">donut_small</span>
+            Token Distribution
+          </h3>
+        </div>
+        <div class="chart-container chart-container--donut">
+          <canvas id="canvasTokenDist"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── API Playground ────────────────────────────────── -->
+    <section class="card playground" id="playground">
+      <div class="card-header">
+        <h3 class="card-title">
+          <span class="material-symbols-rounded">code</span>
+          API Playground
+        </h3>
+        <select id="modelSelect" class="model-selector"></select>
+      </div>
+      <div class="playground-body">
+        <textarea id="promptInput" class="prompt-field" placeholder="Enter your prompt here… (Ctrl+Enter to send)" rows="4"></textarea>
+        <div class="prompt-toolbar">
+          <div class="token-estimate" id="tokenEstimate" style="display:none;">
+            <span class="material-symbols-rounded" style="font-size:16px">calculate</span>
+            <span>Est. <strong id="estTokenCount">0</strong> input tokens · <strong id="estCost">₹0.00</strong></span>
+          </div>
+          <div class="prompt-actions">
+            <button id="btnCountTokens" class="gm-btn gm-btn-tonal gm-btn-sm">
+              <span class="material-symbols-rounded">tag</span> Count Tokens
+            </button>
+            <button id="btnSendPrompt" class="gm-btn gm-btn-filled">
+              <span class="material-symbols-rounded">send</span> Send
+            </button>
+          </div>
+        </div>
+        <div class="response-panel" id="responseArea" style="display:none;">
+          <div class="response-header">
+            <h4>Response</h4>
+            <div class="response-chips">
+              <span class="response-chip" id="respModel">—</span>
+              <span class="response-chip" id="respTokens">0 tokens</span>
+              <span class="response-chip response-chip--cost" id="respCost">₹0.00</span>
+              <span class="response-chip" id="respLatency">0ms</span>
+            </div>
+          </div>
+          <div class="response-body" id="responseText"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Recent Calls ──────────────────────────────────── -->
+    <section class="card" id="recentCallsSection">
+      <div class="card-header">
+        <h3 class="card-title">
+          <span class="material-symbols-rounded">history</span>
+          Recent API Calls
+        </h3>
+        <div class="card-actions">
+          <button id="btnExportCsv" class="gm-btn gm-btn-text gm-btn-sm">
+            <span class="material-symbols-rounded">download</span> CSV
+          </button>
+          <button id="btnExportJson" class="gm-btn gm-btn-text gm-btn-sm">
+            <span class="material-symbols-rounded">download</span> JSON
+          </button>
+        </div>
+      </div>
+      <div class="table-scroll">
+        <table class="gm-table" id="callsTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Time</th>
+              <th>Model</th>
+              <th>Prompt</th>
+              <th class="num">Input</th>
+              <th class="num">Output</th>
+              <th class="num">Thinking</th>
+              <th class="num">Total</th>
+              <th class="num">Cost (₹)</th>
+              <th class="num">Latency</th>
+            </tr>
+          </thead>
+          <tbody id="callsTableBody">
+            <tr class="empty-state-row"><td colspan="10">
+              <div class="empty-state">
+                <span class="material-symbols-rounded empty-icon">rocket_launch</span>
+                <p>No API calls yet. Use the playground above to get started.</p>
+              </div>
+            </td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── Session History ───────────────────────────────── -->
+    <section class="card" id="sessionHistorySection">
+      <div class="card-header">
+        <h3 class="card-title">
+          <span class="material-symbols-rounded">folder_open</span>
+          Session History
+        </h3>
+        <span class="alltime-badge" id="allTimeCost">All-time: ₹0.00</span>
+      </div>
+      <div class="table-scroll">
+        <table class="gm-table" id="sessionsTable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Started</th>
+              <th>Status</th>
+              <th class="num">Calls</th>
+              <th class="num">Tokens</th>
+              <th class="num">Cost (₹)</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="sessionsTableBody">
+            <tr class="empty-state-row"><td colspan="7">
+              <div class="empty-state">
+                <span class="material-symbols-rounded empty-icon">folder_off</span>
+                <p>No sessions yet. Start one above.</p>
+              </div>
+            </td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Toast Container ─────────────────────────────────── -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ── Footer ──────────────────────────────────────────── -->
+  <footer class="gm-footer" id="footer">
+    <span>Gemini Usage Tracker v1.0.0</span>
+    <span class="footer-sep">·</span>
+    <span id="footerUptime">Uptime: —</span>
+    <span class="footer-sep">·</span>
+    <a href="https://aistudio.google.com/" target="_blank" rel="noopener">Google AI Studio
+      <span class="material-symbols-rounded" style="font-size:14px;vertical-align:middle">open_in_new</span>
+    </a>
+  </footer>
+
+  <script src="js/utils.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
