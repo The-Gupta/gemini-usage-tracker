@@ -80,11 +80,10 @@ Before you begin, make sure you have:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/The-Gupta/-gemini-usage-tracker.git
-cd -- -gemini-usage-tracker
+git clone https://github.com/The-Gupta/gemini-usage-tracker.git
+cd gemini-usage-tracker
 ```
 
-> **Note:** The repo name starts with a dash. Use `cd -- -gemini-usage-tracker` (the `--` tells the shell it's not a flag).
 
 ### 2. Install Dependencies
 
@@ -479,3 +478,6 @@ MIT - see [LICENSE](LICENSE) for details.
 ---
 
 **Built with Antigravity IDE**
+
+
+
